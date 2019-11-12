@@ -4,7 +4,7 @@ import { Params, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { DishService } from '../services/dish.service';
 import { switchMap } from 'rxjs/operators';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Comment } from '../shared/comment';
 
 @Component({
@@ -46,7 +46,8 @@ export class DishDetailComponent implements OnInit {
     this.commentForm = this.fb.group({
       'author': ['', [Validators.required, Validators.minLength(2)]],
       'rating': 5,
-      'comment': ['', [Validators.required, Validators.minLength(2)]]
+      'comment': ['', [Validators.required, Validators.minLength(2)]],
+      'date': new Date()
     });
 
     this.commentForm.valueChanges
@@ -80,7 +81,7 @@ export class DishDetailComponent implements OnInit {
       .subscribe((dishIds) => this.dishIds = dishIds);
     this.route.params
       .pipe(switchMap((params: Params) => this.dishService.getDish(params['id'])))
-      .subscribe(dish => {this.dish = dish; this.setPrevNext(dish.id);});
+      .subscribe(dish => {this.dish = dish; this.setPrevNext(dish.id); });
   }
 
   setPrevNext(dishId: string) {
@@ -96,11 +97,14 @@ export class DishDetailComponent implements OnInit {
 
   onSubmit() {
     this.comment = this.commentForm.value;
-    console.log(this.comment);
+    console.log('comment',this.comment);
+    console.log('dish comments', this.dish.comments)
+    this.dish.comments.push(this.comment)
     this.commentForm.reset({
       author: '',
       rating: 5,
       comment: '',
+      date: ''
     });
     this.commentFormDirective.resetForm();
   }

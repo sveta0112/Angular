@@ -47,9 +47,11 @@
         </mat-list-item>
       </mat-list>
 
+      <p>{{ commentForm.value | json }}</p>
+
       <form novalidate [formGroup]="commentForm" #cform="ngForm" (ngSubmit)="onSubmit()">
           <p>
-            <mat-form-field class="half-width">
+            <mat-form-field class="full-width">
               <input matInput formControlName="author" placeholder="Name" type="text" required>
             </mat-form-field>
             <mat-error *ngIf="formErrors.author">
@@ -57,7 +59,7 @@
             </mat-error>
           </p>
           <p>
-            <mat-slider thumbLabel min="5" max="100"  formControlName="rating"></mat-slider>
+            <mat-slider thumbLabel min="1" max="5" step="1" tickInterval="1"  formControlName="rating"></mat-slider>
           </p>
 
           <p>
