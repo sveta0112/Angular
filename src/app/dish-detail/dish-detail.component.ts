@@ -4,6 +4,8 @@ import { Params, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { DishService } from '../services/dish.service';
 import { switchMap } from 'rxjs/operators';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { Comment } from '../shared/comment';
 
 @Component({
   selector: 'app-dish-detail',
@@ -17,8 +19,21 @@ export class DishDetailComponent implements OnInit {
   prev: string;
   next: string;
 
-  constructor(private dishService: DishService, private location: Location, private route: ActivatedRoute) { }
 
+  commentForm: FormGroup;
+  comment: Comment;
+
+  constructor(private dishService: DishService, private location: Location, private route: ActivatedRoute, private fb: FormBuilder) {
+    this.createForm();
+   }
+
+  createForm() {
+    this.commentForm = this.fb.group({
+      'author': ['', Validators.required],
+      'rating': 0,
+      'comment': ''
+    });
+  }
   ngOnInit() {
     this.dishService.getDishIds()
       .subscribe((dishIds) => this.dishIds = dishIds);
@@ -36,6 +51,11 @@ export class DishDetailComponent implements OnInit {
 
   goBack(): void {
     this.location.back();
+  }
+
+  onSubmit() {
+    this.comment = this.commentForm.value;
+    console.log(this.comment);
   }
 
 }
