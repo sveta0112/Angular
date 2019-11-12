@@ -26,6 +26,9 @@
 
     <!-- <p>Display the details of the Dish here</p> -->
   </div>
+  <div fxFlex [hidden]="dish">
+    <mat-spinner></mat-spinner> <h4>Loading...Please wait</h4>
+  </div>
 
   <div fxFlex="40" >
       <mat-list *ngIf="dish">
