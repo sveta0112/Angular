@@ -23,6 +23,7 @@ export class DishDetailComponent implements OnInit {
 
   commentForm: FormGroup;
   comment: Comment;
+  dishCopy: Dish;//modified dish
 
   formErrors = {
     'author': '',
@@ -87,7 +88,7 @@ export class DishDetailComponent implements OnInit {
       .subscribe((dishIds) => this.dishIds = dishIds);
     this.route.params
       .pipe(switchMap((params: Params) => this.dishService.getDish(params['id'])))
-      .subscribe(dish => {this.dish = dish; this.setPrevNext(dish.id); },
+      .subscribe(dish => {this.dish = dish; this.dishCopy = dish; this.setPrevNext(dish.id); },
         errmess => this.errMess = <any>errmess);
   }
 
@@ -105,8 +106,14 @@ export class DishDetailComponent implements OnInit {
   onSubmit() {
     this.comment = this.commentForm.value;
     console.log('comment',this.comment);
-    console.log('dish comments', this.dish.comments)
-    this.dish.comments.push(this.comment)
+    console.log('dish comments', this.dish.comments);
+    this.dishCopy.comments.push(this.comment);
+    this.dishService.putDish(this.dishCopy)
+        .subscribe(dish => {
+          //this.dish = dish --> is UI updated, and this.dishCopy is for server update
+          this.dish = dish; this.dishCopy = dish;
+    },
+        errmess => { this.dish = null; this.dishCopy = null; this.errMess = <any>errmess;});
     this.commentForm.reset({
       author: '',
       rating: 5,
